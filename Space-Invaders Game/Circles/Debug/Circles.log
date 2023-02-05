@@ -1,0 +1,4 @@
+﻿  Circles.cpp
+C:\Users\Jonny\source\repos\lab-2-2-animation-jonasmuhire\Circles\Circles.cpp(87,25): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Jonny\source\repos\lab-2-2-animation-jonasmuhire\Circles\Circles.cpp(87,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Circles.vcxproj -> C:\Users\Jonny\source\repos\lab-2-2-animation-jonasmuhire\Debug\Circles.exe

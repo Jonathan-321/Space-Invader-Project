@@ -2,18 +2,17 @@
 /*
 *  game.cpp
 *     - A simple game loop that allows you to move the ship
-*       and eventually fire a missile. 
+*       and eventually fire a missile.
 *  AUTHOR: Most of the work in this program was completed by Prof. Andy Harbert
 *          Prof. Pat Smith has made modifications (December 2021)
-*		Jonathan Muhire added modifications for the Sprite movement and missile firing
+*
 */
-
 int main()
 {
 	// Create the window for graphics. 
 	//  The "aliens" is the text in the title bar on the window. 
 	RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "aliens!");
-	
+
 	// Limit the framerate to 60 frames per second
 	window.setFramerateLimit(60);
 
@@ -23,6 +22,16 @@ int main()
 	// a Texture is an image of pixels. You can load a .png file
 	//   or a bitmap file.  These files are in the "Resource files" section of
 	//   the solution explorer. 
+
+
+
+	Texture enemyTexture;
+	if (!enemyTexture.loadFromFile("alien.bmp"))
+	{
+		cout << "Unable to load enemy texture!" << endl;
+		exit(EXIT_FAILURE);
+	}
+
 	Texture shipTexture;
 	if (!shipTexture.loadFromFile("ship.png"))
 	{
@@ -54,9 +63,26 @@ int main()
 	Sprite ship;
 	ship.setTexture(shipTexture);
 
-	// *** You will have to code to load the  texture for the missile here. 
-	
 
+	// creating a sprite for the enemyShip;
+	Sprite enemyShip;
+	enemyShip.setTexture(enemyTexture);
+
+	// setting the initial position of the enemy
+
+	float enemyX = window.getSize().x / 2.0f;
+	float enemyY = window.getSize().y * 0.2f;
+
+	enemyShip.setPosition(enemyX, enemyY);
+
+	// Track if the enemy was hit
+
+	bool isenemyHit = false;
+
+	// setting the boolean enemyDirection right 
+
+	bool movingRight = true;
+	// Texture for the missile 
 	Texture missileTexture;
 	if (!missileTexture.loadFromFile("missile.png"))
 	{
@@ -70,8 +96,8 @@ int main()
 
 
 	// initial position of the ship will be approx middle of screen
-	float shipX = window.getSize().x / 2.0f;
-	float shipY = window.getSize().y / 2.0f;
+	float shipX = WINDOW_WIDTH - window.getSize().x / 4.0f;
+	float shipY = WINDOW_HEIGHT - window.getSize().y / 4.0f;
 	//float missileX = window.getSize().x / 2.0f;
 
 
@@ -119,7 +145,7 @@ int main()
 		// render the next frame, and so on. All this happens ~ 60 times/second.
 		//===========================================================
 
-		
+
 		//updateMissile(missile, ship);
 
 		//window.clear();
@@ -150,13 +176,8 @@ int main()
 			// move it "up" the screen by decreasing 'y' and then use 'setPosition()' 
 			//     to place it at its new location. 
 
-			//Vector2f pos = ship.getPosition();
-			//missile.setPosition(pos.x, pos.y);// assuming missile is a sprite 
 
 
-
-			
-			
 			// Don't forget to draw it after you change the missiles location. 
 			// Don't forget to see if the missile is off screen!
 			// if it's moved off the top, set the boolean to false!
@@ -166,15 +187,48 @@ int main()
 				isMissileInFlight = false;
 
 			}
+
 			window.draw(missile);
 			missile.move(0, -DISTANCE);
 
+
+
+			//Check if the missile has hit the enemy
+
+			FloatRect missileBounds = missile.getGlobalBounds();
+			FloatRect enemyBounds = enemyShip.getGlobalBounds();
+
+			if (missileBounds.intersects(enemyBounds))
+			{
+				// Output a hit message
+				cout << "Hit!" << endl;
+
+				// Set the missile boolean to false
+				isMissileInFlight = false;
+
+				// Set the enemy hit boolean to true
+				isenemyHit = true;
+
+				//// checking if the enemy was hit 
+				//if (isenemyHit) {
+
+				//	// Hide the missile 
+				//	missile.setPosition(-100, -100);
+				//	//Reset the enemy hit 
+				//		isenemyHit = false;
+
+				//}
+			}
+
 		}
 
+		moveEnemy(enemyShip, movingRight);
+
+		// drawing the enemy 
+		window.draw(enemyShip);
 		// end the current frame; this makes everything that we have 
 		// already "drawn" actually show up on the screen
 		window.display();
-
 		// At this point the frame we have built is now visible on screen.
 		// Now control will go back to the top of the animation loop
 		// to build the next frame. Since we begin by drawing the
